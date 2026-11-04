@@ -4,5 +4,5 @@
 @media (min-width: 3000px) { :root { --page-max: 1880px; } }
 
 /* the phone-only squad list was leaking onto desktop above the table */
-@media (min-width: 761px) { .sq-list { display: none; } }
+@media (min-width: 761px) { .sq-list:not(.tm-squad) { display: none; } }
 .home2 { max-width: none; }

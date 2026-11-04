@@ -32,7 +32,7 @@
       const bill = D().club.weeklyWageBill, budget = D().club.wageBudget;
       const used = budget ? Math.round((100 * bill) / budget) : null;
       const wages = D().squad.filter((p) => p.status !== 'loaned_out').sort((a, b) => b.wage - a.wage);
-      return `<header class="page-head"><div><h1>Financials</h1><p>${F.history.length ? `Weekly snapshots from ${U.date(F.history[0].date)} to ${U.date(last.date)}.` : 'No weekly snapshots yet.'}</p></div>
+      return `<header class="page-head"><div><h1>Financials</h1><p>${F.history.length ? `Week by week, ${U.date(F.history[0].date)} to ${U.date(last.date)}.` : `${U.esc(D().meta.season)} season.`}</p></div>
         <dl class="tiles head-tiles four"><div class="tile"><dt>${last.balance == null && D().club.clubWorth ? 'Club worth' : 'Club balance'}</dt><dd>${last.balance != null ? U.money(last.balance) : (D().club.clubWorth ? U.money(D().club.clubWorth) : '—')}</dd></div><div class="tile"><dt>Transfer budget</dt><dd>${U.money(D().club.transferBudget)}</dd></div>
           <div class="tile"><dt>Wage bill / year</dt><dd>${U.wageYr(bill)}</dd>${budget ? `<small>of ${U.wageYr(budget)} budget</small>` : `<small>${U.money(bill)} a week</small>`}</div>
           ${budget ? `<div class="tile"><dt>Wage budget used</dt><dd>${used}%</dd><div class="meter ${used > 95 ? 'm-crit' : used > 85 ? 'm-warn' : 'm-good'}" role="meter" aria-valuenow="${used}" aria-valuemin="0" aria-valuemax="100" aria-label="Wage budget used"><i style="width:${Math.min(100, used)}%"></i></div></div>` : `<div class="tile"><dt>Squad value</dt><dd>${U.money(U.sum(D().squad, (p) => p.value || 0))}</dd></div>`}</dl></header>
@@ -51,7 +51,7 @@
     after(root) {
       const U = FC.u;
       const H = D().finances.history;
-      if (!H.length) { root.querySelectorAll('.chart').forEach((c) => { c.innerHTML = '<p class="empty-note">No weekly snapshots yet.</p>'; }); return; }
+      if (!H.length) { root.querySelectorAll('.chart').forEach((c) => { c.innerHTML = '<p class="empty-note">Charted week by week once the season is under way.</p>'; }); return; }
       const labels = H.map((h) => U.date(h.date, 'short'));
       FC.chart.mount(root.querySelector('#fi-bal'), (w, h) => FC.chart.line({
         labels, height: h || 260, fmt: (v) => U.money(v), label: 'Club balance and transfer budget by week',

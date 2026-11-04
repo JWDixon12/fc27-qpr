@@ -42,7 +42,7 @@
     if (C.clubWorth) rows.push(['Club worth', FC.u.money(C.clubWorth)]);
     return `<section class="sec club-rec"><div class="sec-head"><h2>Club</h2></div>
       <dl class="kv">${rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
-      ${h ? `<dl class="honours-line">${[[h.league, 'League titles'], [h.domesticCups, 'Domestic cups'], [h.europeanCups, 'European Cups']]
+      ${h && (h.league || h.domesticCups || h.europeanCups) ? `<dl class="honours-line">${[[h.league, 'League titles'], [h.domesticCups, 'Domestic cups'], [h.europeanCups, 'European Cups']]
         .map(([n, l]) => `<div><dd>${n}</dd><dt>${l}</dt></div>`).join('')}</dl>` : ''}</section>`;
   }
 

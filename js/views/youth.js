@@ -9,7 +9,7 @@
     CDM: 'MID', LDM: 'MID', RDM: 'MID', CM: 'MID', LCM: 'MID', RCM: 'MID', CAM: 'MID', LAM: 'MID', RAM: 'MID', LM: 'MID', RM: 'MID' };
   const groupOf = (pos) => GROUP_OF[pos] || 'ATT';
 
-  /** Five-pip meter for scout knowledge / experience. */
+  /** Five-pip meter for scout experience / judgement (1-5 stars, as in the game). */
   function pips(n, label) {
     return `<span class="yo-pips" role="img" aria-label="${label} ${n} of 5">${[1, 2, 3, 4, 5].map((i) => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</span>`;
   }
@@ -40,10 +40,10 @@
       .map((x) => `<li class="st-${x.stage}"${x.stage !== 'academy' && x.stage !== 'left' ? ` data-player="${x.id}" tabindex="0"` : ''}><span>${U.esc(x.name)}</span><em>${STAGE[x.stage]}</em></li>`).join('')}</ul>` : '<p class="yo-return">No finds yet.</p>';
     return `<article class="yo-scout${best ? ' best' : ''}">
       ${s.flag ? `<img class="yo-scout-bg" src="${s.flag}" alt="" aria-hidden="true">` : ''}
-      <p class="yo-kicker">${best ? 'Chief scout · ' : ''}Scouting</p>
-      <h3 class="yo-country">${U.esc(s.country || 'Unassigned')}</h3>
+      <p class="yo-kicker">${best ? 'Chief scout · ' : ''}${s.country ? 'Scouting' : 'Awaiting assignment'}</p>
+      <h3 class="yo-country">${U.esc(s.country || 'At the training ground')}</h3>
       <p class="yo-scout-name">${flag(s.natFlag, s.nat, 'yo-flag sm')}${U.esc(s.name)}</p>
-      <dl class="yo-meters"><div><dt>Knowledge</dt><dd>${pips(s.knowledge, 'Knowledge')}</dd></div><div><dt>Experience</dt><dd>${pips(s.experience, 'Experience')}</dd></div></dl>
+      <dl class="yo-meters"><div><dt>Experience</dt><dd>${pips(s.experience, 'Experience')}</dd></div><div><dt>Judgement</dt><dd>${pips(s.judgement, 'Judgement')}</dd></div></dl>
       <dl class="yo-record"><div><dt>Found</dt><dd>${R.signed}</dd></div><div><dt>Promoted</dt><dd>${R.promoted}</dd></div><div><dt>Debuts</dt><dd>${R.debuts}</dd></div></dl>
       ${findsHtml}
       ${s.returns ? `<p class="yo-return">Reports back <b>${U.date(s.returns)}</b></p>` : ''}
@@ -71,7 +71,7 @@
       const Y = D().youth;
       const grads = D().squad.filter((p) => p.homegrown).sort((a, b) => b.ovr - a.ovr);
       const prospects = [...Y.prospects].sort((a, b) => b.ovr - a.ovr || a.age - b.age);
-      const bestScout = Y.scouts.reduce((b, s) => (!b || s.knowledge + s.experience > b.knowledge + b.experience ? s : b), null);
+      const bestScout = Y.scouts.reduce((b, s) => (!b || s.judgement + s.experience > b.judgement + b.experience ? s : b), null);
       const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
       const groups = GROUPS.map(([g, label]) => [label, prospects.filter((p) => groupOf(p.pos) === g)]).filter(([, l]) => l.length);
       return `<header class="page-head yo-head"><div><h1>Youth Academy</h1>

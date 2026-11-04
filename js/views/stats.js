@@ -119,7 +119,7 @@
   function preseason() {
     const L = FC.statsData.attributeLeaders();
     return `
-      <section class="st-sec"><h3 class="st-h">Last season <small>2025/26, real-world, all clubs</small></h3><div id="st-last"><p class="empty-note">Loading…</p></div></section>
+      <section class="st-sec"><h3 class="st-h">Last season <small>2025/26, all clubs and competitions</small></h3><div id="st-last"><p class="empty-note">Loading…</p></div></section>
       <section class="st-sec"><h3 class="st-h">Attribute leaders</h3><ol class="ld-strip">${L.map((x) => `<li><button type="button" class="ld-card" data-player="${x.p.id}">${FC.u.portrait(x.p, 72)}<span>${esc(x.label)}</span><b>${x.v}</b><small>${esc(x.p.short)}</small></button></li>`).join('')}</ol></section>`;
   }
 
