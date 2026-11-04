@@ -58,7 +58,7 @@
   /* ---------- lookups ---------- */
   const team = (id) => D().teams[String(id)] || { name: String(id), short: String(id).slice(0, 3).toUpperCase(), crest: null };
   const teamName = (id) => (typeof id === 'number' || /^\d+$/.test(String(id)) ? team(id).name : String(id));
-  const comp = (id) => D().competitions.find((c) => c.id === id) || { id, name: id, type: 'cup', color: '#888' };
+  const comp = (id) => D().competitions.find((c) => c.id === id) || (D().otherComps || []).find((c) => c.id === id) || { id, name: id, type: 'cup', color: '#888' };
   const squadById = () => {
     if (!FC._squadIdx) FC._squadIdx = new Map(D().squad.map((p) => [p.id, p]));
     return FC._squadIdx;
