@@ -190,9 +190,39 @@
   const art = (h) => (h.id ? `img/trophies/${h.id}.png`
     : `img/awards/${(AWARD_ART.find(([re]) => re.test(h.name)) || [0, 'player_of_the_season'])[1]}.svg`);
 
+  /* Our own awards from this career (CAREER.awards): Team of the Week picks and Player of the Week. */
+  const AWARD_NAME = { championship_team_of_the_week: 'Championship Team of the Week' };
+  const awardName = (k) => AWARD_NAME[k] || k.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase());
+  const periodLabel = (x) => String(x || '').replace(/^(\d{4})\/(\d{2}) (.+)$/, '$3 $1-$2');
+
+  function careerAwards(p) {
+    const out = new Map();
+    const add = (key, name, badge, e) => {
+      if (!out.has(key)) out.set(key, { name, badge, rows: [] });
+      out.get(key).rows.push(e);
+    };
+    ((window.CAREER && window.CAREER.awards) || []).forEach((e) => {
+      if (e.status && e.status !== 'final') return;
+      const r = (e.xi || []).find((x) => x.id === p.id);
+      if (!r) return;
+      const base = awardName(e.award);
+      add(e.award, base, 'team_of_the_week', { ...e, r });
+      if (e.playerOfTheWeek === p.id) add(`${e.award}:potw`, base.replace('Team of the Week', 'Player of the Week'), 'player_of_the_week', { ...e, r });
+    });
+    return [...out.values()].sort((a, b) => (a.badge === 'player_of_the_week' ? -1 : 0) - (b.badge === 'player_of_the_week' ? -1 : 0));
+  }
+
+  function careerTile(g) {
+    const periods = g.rows.map((e) => `${periodLabel(e.period)} (${e.r.rating.toFixed(1)})`).reverse();
+    return `<li class="ho-t"><img src="img/awards/${g.badge}.svg" alt="" width="48" height="48" loading="lazy">
+      <div class="ho-x"><b class="ho-n">${g.rows.length > 1 ? `<span class="ho-c">${g.rows.length}×</span>` : ''}${esc(g.name)}</b>
+      <span class="ho-y">${esc(periods.slice(0, 6).join(', '))}${periods.length > 6 ? ` +${periods.length - 6}` : ''}</span></div></li>`;
+  }
+
   function honours(p) {
     const list = (p.history && p.history.honours) || [];
-    if (!list.length) return '';
+    const mine = careerAwards(p);
+    if (!list.length && !mine.length) return '';
     const groups = new Map();
     list.forEach((h) => {
       const k = h.id ? `t${h.id}` : `a${h.name}|${h.comp || h.club || ''}`;
@@ -212,13 +242,14 @@
     const team = all.filter((g) => g.h.id).sort(order);
     const ind = all.filter((g) => !g.h.id).sort(order);
     const part = (title, gs) => (gs.length ? `<h4 class="ho-h">${title}</h4><ul class="ho-grid">${gs.map(tile).join('')}</ul>` : '');
-    return `<section class="panel pp-wide ho"><div class="panel-head"><h3>Honours</h3><span class="sub">To 30 June 2026</span></div>
-      ${part('Trophies', team)}${part('Individual awards', ind)}</section>`;
+    const thisCareer = mine.length ? `<h4 class="ho-h">Since July 2026</h4><ul class="ho-grid">${mine.map(careerTile).join('')}</ul>` : '';
+    return `<section class="panel pp-wide ho"><div class="panel-head"><h3>Honours</h3></div>
+      ${thisCareer}${part('Trophies', team)}${part('Individual awards', ind)}</section>`;
   }
 
   function block(p) {
     const has = p.history && p.history.seasons && p.history.seasons.length;
-    if (!has && !(p.season && p.season.apps)) return '';
+    if (!has && !(p.season && p.season.apps)) return honours(p);
     st.sort = null; st.dir = -1; st.open.clear();
     if (has && !p.history.seasons.some((s) => st.tab === 'all' || s.compType === st.tab)) st.tab = 'all';
     const types = new Set(((p.history && p.history.seasons) || []).map((s) => s.compType));
