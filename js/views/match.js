@@ -13,7 +13,7 @@
       const r = U.result(f);
       return `<a href="#match/${f.id}" class="mc-ticket ${f.id === cur ? 'on' : ''}" style="--c:${U.comp(f.comp).color}" ${f.id === cur ? 'aria-current="page"' : ''}>
         <small>${U.date(f.date, 'short')} · ${U.esc(U.comp(f.comp).name)}</small>
-        <span class="mt-row">${U.crest(f.home, 24)}<b>${f.hg}–${f.ag}</b>${U.crest(f.away, 24)}<span class="mt-res">${U.resChip(r)}</span></span></a>`;
+        <span class="mt-row">${U.crest(f.home, 24)}<b>${f.hg}–${f.ag}${U.pensTag(f)}</b>${U.crest(f.away, 24)}<span class="mt-res">${U.resChip(r)}</span></span></a>`;
     }).join('')}</nav>`;
   }
 
@@ -26,7 +26,7 @@
       <p class="sb-xg">${m.xg[i].toFixed(2)} xG · ${m.possession[i]}% possession</p><ul class="sb-goals">${goals(t)}${reds(t)}</ul></div>`;
     return `<section class="scoreboard" aria-label="Final score">
       <header>${U.compChip(f.comp)}<span>${U.esc(f.round)}</span><span>${U.date(f.date, 'day')} ${U.parseDate(f.date).getFullYear()}</span><span>${f.venue === 'H' ? U.esc(D().club.stadium) : 'Away'}</span></header>
-      <div class="sb-main">${side(f.home, 0)}<div class="sb-score"><b>${m.score[0]}</b><i>:</i><b>${m.score[1]}</b><small>Full time</small></div>${side(f.away, 1)}</div></section>`;
+      <div class="sb-main">${side(f.home, 0)}<div class="sb-score"><b>${m.score[0]}</b><i>:</i><b>${m.score[1]}</b><small>${m.pens ? `${m.pens[0]}–${m.pens[1]} on penalties` : 'Full time'}</small></div>${side(f.away, 1)}</div></section>`;
   }
 
   function teamStats(f, m) {

@@ -10,11 +10,11 @@
     const opp = U.opponent(f);
     const r = U.result(f);
     const has = !!D().matches[f.id];
-    const tip = `<strong>${U.esc(U.team(f.home).name)} ${f.played ? `${f.hg}–${f.ag}` : 'v'} ${U.esc(U.team(f.away).name)}</strong>${U.esc(U.comp(f.comp).name)} ${U.esc(f.round)} · ${U.time12(f.time)}${has ? '<br>Open in Match Centre' : ''}`;
+    const tip = `<strong>${U.esc(U.team(f.home).name)} ${f.played ? `${f.hg}–${f.ag}${U.pensTag(f)}` : 'v'} ${U.esc(U.team(f.away).name)}</strong>${U.esc(U.comp(f.comp).name)} ${U.esc(f.round)} · ${U.time12(f.time)}${has ? '<br>Open in Match Centre' : ''}`;
     const to = has ? `match/${f.id}` : U.hasClub(opp) ? `team/${opp}` : '';
     return `<div class="fx ${f.played ? 'played' : ''} ${to ? 'has' : ''}" style="--c:${U.comp(f.comp).color}" ${to ? `data-href="${to}" tabindex="0" role="link"` : 'tabindex="0"'} data-tip="${U.esc(tip)}">
       <span class="fx-top">${U.crest(opp, 16)}<b>${U.esc(U.team(opp).short)}</b><small>${f.venue}</small></span>
-      <span class="fx-bot">${r ? `<span class="fx-score">${r.gf}–${r.ga}</span><span class="fx-res fr-${r.res}" aria-label="${{ W: 'Win', D: 'Draw', L: 'Loss' }[r.res]}">${r.res}</span>` : `<span class="fx-time">${U.time12(f.time)}</span>`}</span></div>`;
+      <span class="fx-bot">${r ? `<span class="fx-score">${r.gf}–${r.ga}${r.pens ? '<small class="pens">p</small>' : ''}</span><span class="fx-res fr-${r.res}" aria-label="${{ W: 'Win', D: 'Draw', L: 'Loss' }[r.res]}">${r.res}</span>` : `<span class="fx-time">${U.time12(f.time)}</span>`}</span></div>`;
   }
 
   function months() {
@@ -61,7 +61,7 @@
       return `<li style="--c:${U.comp(f.comp).color}" class="${f.played ? 'played' : ''}" ${to ? `data-href="${to}" tabindex="0" role="link"` : ''}>
         <span class="cl-date">${U.date(f.date, 'day')}</span>${U.compChip(f.comp)}<span class="cl-round">${U.esc(f.round)}</span>
         <span class="cl-match">${U.crest(f.home, 24)}<b class="${U.isUs(f.home) ? 'us' : ''}"><span class="cl-full">${U.esc(U.team(f.home).name)}</span><span class="cl-short">${U.esc(U.team(f.home).short)}</span></b>
-          <span class="cl-score">${f.played ? `${f.hg}–${f.ag}` : (U.time12(f.time) || 'v')}</span>
+          <span class="cl-score">${f.played ? `${f.hg}–${f.ag}${U.pensTag(f)}` : (U.time12(f.time) || 'v')}</span>
           <b class="${U.isUs(f.away) ? 'us' : ''}"><span class="cl-full">${U.esc(U.team(f.away).name)}</span><span class="cl-short">${U.esc(U.team(f.away).short)}</span></b>${U.crest(f.away, 24)}</span>
         <span class="cl-res">${r ? U.resChip(r) : ''}${has ? '<small>Match Centre</small>' : ''}</span></li>`;
     }).join('')}</ol></section>`).join('');

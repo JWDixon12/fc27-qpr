@@ -46,23 +46,38 @@
     goal: '<svg viewBox="0 0 16 16" class="ev-i ev-goal" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.6l2.6 1.9-1 3.1H6.4l-1-3.1z"/></svg>',
     yellow: '<i class="ev-card y" aria-hidden="true"></i>', red: '<i class="ev-card r" aria-hidden="true"></i>',
     sub: '<span class="ev-subicon" aria-hidden="true"><b>▲</b><b>▼</b></span>',
+    injury: '<svg viewBox="0 0 16 16" class="ev-i ev-inj" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2.5"/><path d="M8 5v6M5 8h6"/></svg>',
   };
 
   function timeline(f, m) {
     const u = U();
-    const label = { goal: 'Goal', pen_goal: 'Penalty goal', own_goal: 'Own goal', yellow: 'Yellow card', red: 'Red card', sub: 'Substitution' };
-    const rows = m.events.map((e) => {
+    const label = { goal: 'Goal', pen_goal: 'Penalty goal', own_goal: 'Own goal', yellow: 'Yellow card', red: 'Red card', sub: 'Substitution', injury: 'Injury' };
+    const rows = m.events.filter((e) => e.type !== 'shootout').map((e) => {
       const left = e.team === f.home;
       const who = u.player(e.player);
       const icon = /goal/.test(e.type) ? ICON.goal : ICON[e.type] || '';
       const detail = e.type === 'sub' ? `<span class="ev-name">${u.esc(u.personName(e.player))}</span><small class="ev-off">${u.esc(u.personName(e.playerOut))}</small>`
-        : `<span class="ev-name">${u.esc(u.personName(e.player))}${e.type === 'pen_goal' ? ' (pen)' : e.type === 'own_goal' ? ' (og)' : ''}</span>${e.assist ? `<small>Assist ${u.esc(u.personName(e.assist))}</small>` : ''}`;
+        : `<span class="ev-name">${u.esc(u.personName(e.player))}${e.type === 'pen_goal' ? ' (pen)' : e.type === 'own_goal' ? ' (og)' : ''}</span>${e.assist ? `<small>Assist ${u.esc(u.personName(e.assist))}</small>` : e.type === 'injury' ? '<small>Injured</small>' : ''}`;
       return `<li class="ev ${left ? 'l' : 'r'} ev-${e.type}" aria-label="${e.minute} minutes, ${label[e.type] || e.type}">
         <div class="ev-body" ${who ? `data-player="${who.id}" tabindex="0"` : ''}>${icon}<div>${detail}</div>${who ? u.portrait(who, 34) : ''}</div>
         <span class="ev-min">${e.minute}'</span></li>`;
     }).join('');
     return `<div class="panel-head"><h2>Events</h2><p class="sub">${u.esc(u.team(f.home).short)} left · ${u.esc(u.team(f.away).short)} right</p></div>
-      <ol class="events">${rows}<li class="ev ft"><span class="ev-min">FT</span></li></ol>`;
+      <ol class="events">${rows}<li class="ev ft"><span class="ev-min">FT</span></li>${shootout(f, m)}</ol>`;
+  }
+
+  /** Penalty shootout kicks in taking order, under full time: tick for scored, cross for saved or missed. */
+  function shootout(f, m) {
+    const u = U();
+    const kicks = m.events.filter((e) => e.type === 'shootout');
+    if (!kicks.length) return '';
+    const mark = (ok) => `<span class="so-mark ${ok ? 'ok' : 'no'}" aria-hidden="true">${ok ? '✓' : '✗'}</span>`;
+    return `<li class="ev ft"><span class="ev-min">PENS</span></li>${kicks.map((e) => {
+      const who = u.player(e.player);
+      return `<li class="ev ${e.team === f.home ? 'l' : 'r'} ev-so" aria-label="Penalty ${e.scored ? 'scored' : 'missed'}">
+        <div class="ev-body" ${who ? `data-player="${who.id}" tabindex="0"` : ''}>${mark(e.scored)}<div><span class="ev-name">${u.esc(u.personName(e.player))}</span>${e.scored ? '' : '<small>Saved</small>'}</div>${who ? u.portrait(who, 34) : ''}</div>
+        <span class="ev-min">${e.order}</span></li>`;
+    }).join('')}`;
   }
 
   const POS_ORDER = ['GK', 'RB', 'RWB', 'CB', 'LB', 'LWB', 'CDM', 'CM', 'RM', 'CAM', 'LM', 'RW', 'LW', 'CF', 'ST'];

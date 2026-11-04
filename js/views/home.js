@@ -48,7 +48,7 @@
         const r = U.result(f);
         const has = !!D().matches[f.id];
         const tag = has ? `a href="#match/${f.id}"` : 'span';
-        return `<li><${tag} class="fl-item">${U.crest(U.opponent(f), 24)}<b>${r.gf}–${r.ga}</b><i class="res res-${r.res}">${r.res}</i></${has ? 'a' : 'span'}></li>`;
+        return `<li><${tag} class="fl-item">${U.crest(U.opponent(f), 24)}<b>${r.gf}–${r.ga}${r.pens ? '<small class="pens">p</small>' : ''}</b><i class="res res-${r.res}">${r.res}</i></${has ? 'a' : 'span'}></li>`;
       }).join('')}</ol></section>`;
   }
 

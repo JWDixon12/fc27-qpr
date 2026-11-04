@@ -26,7 +26,7 @@
     const paused = m.minutesPlayed && m.minutesPlayed < 90;
     return `<section class="scoreboard" aria-label="Score">
       <header>${f.comp ? U.compChip(f.comp) : ''}</header>
-      <div class="sb-main">${side('home', 0)}<div class="sb-score"><b>${m.score[0]}</b><i>:</i><b>${m.score[1]}</b><small>${paused ? `Paused at ${esc(m.clock)}` : 'Full time'}</small></div>${side('away', 1)}</div></section>`;
+      <div class="sb-main">${side('home', 0)}<div class="sb-score"><b>${m.score[0]}</b><i>:</i><b>${m.score[1]}</b><small>${paused ? `Paused at ${esc(m.clock)}` : m.pens ? `${m.pens[0]}–${m.pens[1]} on penalties` : 'Full time'}</small></div>${side('away', 1)}</div></section>`;
   }
 
   const LOWER = /Beaten|Fouls|Yellow|Red|Recovery|Penalties Committed|Offside/i;
@@ -94,20 +94,24 @@
       if (e.type === 'yellow') return '<span class="ev-card y" aria-label="Yellow card"></span>';
       if (e.type === 'red' || e.type === 'second_yellow') return `<span class="ev-card r${e.type === 'second_yellow' ? ' y2' : ''}" aria-label="Red card"></span>`;
       if (e.type === 'sub') return '<span class="ev-subicon" aria-label="Substitution"><b>&#9650;</b><b>&#9660;</b></span>';
+      if (e.type === 'injury') return '<svg viewBox="0 0 16 16" class="ev-i ev-inj" aria-label="Injury"><rect x="2.5" y="2.5" width="11" height="11" rx="2.5"/><path d="M8 5v6M5 8h6"/></svg>';
       return '';
     };
     const label = (e) => {
       if (e.type === 'sub') return `<span class="ev-name">${esc(e.player)}</span><small class="ev-out">${esc(e.playerOut || '')}</small>`;
-      const what = { yellow: 'Yellow card', red: 'Red card', second_yellow: 'Second yellow', own_goal: 'Own goal', pen_goal: 'Penalty' }[e.type];
+      const what = { yellow: 'Yellow card', red: 'Red card', second_yellow: 'Second yellow', own_goal: 'Own goal', pen_goal: 'Penalty', injury: 'Injured' }[e.type];
       const sub = e.assist ? `Assist ${esc(e.assist)}` : what ? what : '';
       return `<span class="ev-name">${esc(e.player)}</span>${sub ? `<small>${sub}</small>` : ''}`;
     };
-    const half = m.events.findIndex((e) => e.minute > 45);
-    const rows = m.events.map((e, i) => {
+    const evs = m.events.filter((e) => e.type !== 'shootout');
+    const kicks = m.events.filter((e) => e.type === 'shootout');
+    const half = evs.findIndex((e) => e.minute > 45);
+    const rows = evs.map((e, i) => {
       const ht = i === half ? '<li class="ev ft ht"><span class="ev-min">HT</span></li>' : '';
       return `${ht}<li class="ev ${e.side === 'home' ? 'l' : 'r'} ev-${esc(e.type)}"><div class="ev-body">${icon(e)}<div>${label(e)}</div></div><span class="ev-min">${e.minute}'</span></li>`;
     }).join('');
-    const end = `<li class="ev ft"><span class="ev-min">${m.minutesPlayed < 90 ? esc(m.clock.split(':')[0]) + "'" : 'FT'}</span></li>`;
+    const so = kicks.length ? `<li class="ev ft"><span class="ev-min">PENS</span></li>${kicks.map((e) => `<li class="ev ${e.side === 'home' ? 'l' : 'r'} ev-so"><div class="ev-body"><span class="so-mark ${e.scored ? 'ok' : 'no'}" aria-hidden="true">${e.scored ? '✓' : '✗'}</span><div><span class="ev-name">${esc(e.player)}</span>${e.scored ? '' : '<small>Saved</small>'}</div></div><span class="ev-min">${e.order}</span></li>`).join('')}` : '';
+    const end = `<li class="ev ft"><span class="ev-min">${m.minutesPlayed < 90 ? esc(m.clock.split(':')[0]) + "'" : 'FT'}</span></li>${so}`;
     const shotTable = m.shots.length ? `<div class="table-wrap"><table class="data"><caption class="visually-hidden">Shots</caption><thead><tr><th>Team</th><th>Min</th><th>Player</th><th>Type</th><th class="n">xG</th><th>Result</th></tr></thead><tbody>${shots}</tbody></table></div>` : '';
     return `<div class="gm-events"><ol class="events">${rows}${half < 0 ? '<li class="ev ft ht"><span class="ev-min">HT</span></li>' : ''}${end}</ol>${shotTable}</div>`;
   }

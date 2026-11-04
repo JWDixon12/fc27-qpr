@@ -153,3 +153,7 @@
 .ev-yellow .ev-min { border-color: var(--rule-2); }
 .ev-red .ev-min, .ev-second_yellow .ev-min { border-color: var(--crit); color: var(--crit); }
 .ev.ht .ev-min { font-size: 0.8rem; color: var(--mute); }
+.so-mark { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; font-size: 11px; font-weight: 800; flex: none; }
+.so-mark.ok { background: rgba(62, 207, 142, 0.18); color: var(--good); }
+.so-mark.no { background: rgba(229, 72, 77, 0.18); color: var(--neg); }
+.ev-inj rect { fill: none; stroke: var(--neg); stroke-width: 1.6; } .ev-inj path { stroke: var(--neg); stroke-width: 1.8; stroke-linecap: round; }

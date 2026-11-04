@@ -55,7 +55,7 @@
         return `<li class="${r ? `cp-${r.res}` : 'cp-next'}" style="--c:${U.comp(compId).color}" ${has ? `data-href="match/${f.id}" tabindex="0" role="link"` : ''}>
           <span class="cp-round">${U.esc(f.round)}</span>${U.crest(U.opponent(f), 30)}
           <span class="cp-opp"><b>${U.esc(U.team(U.opponent(f)).name)}</b><small>${f.venue === 'H' ? 'Home' : 'Away'} · ${U.date(f.date)}</small></span>
-          <span class="cp-res">${r ? `${r.gf}–${r.ga} ${U.resChip(r)}` : 'To play'}</span></li>`;
+          <span class="cp-res">${r ? `${r.gf}–${r.ga}${U.pensR(r)} ${U.resChip(r)}` : 'To play'}</span></li>`;
       }).join('')}</ol></section>`;
   }
 

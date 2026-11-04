@@ -196,3 +196,4 @@ body.drawer-open { overflow: hidden; }
 .seg { flex-wrap: wrap; }
 .seg button { white-space: nowrap; }
 @media (min-width: 3000px) { .drawer-panel { width: min(1500px, 100vw); } }
+.pens { font-size: 0.72em; font-weight: 500; color: var(--mute); margin-left: 4px; white-space: nowrap; }

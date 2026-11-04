@@ -85,8 +85,16 @@
     const home = f.home === us();
     const gf = home ? f.hg : f.ag;
     const ga = home ? f.ag : f.hg;
+    if (gf === ga && f.pens) {   // cup tie settled by a shootout: the shootout decides W / L
+      const pf = home ? f.pens[0] : f.pens[1];
+      const pa = home ? f.pens[1] : f.pens[0];
+      return { res: pf > pa ? 'W' : 'L', gf, ga, pens: [pf, pa] };
+    }
     return { res: gf > ga ? 'W' : gf === ga ? 'D' : 'L', gf, ga };
   }
+  /** ' (3–5 pens)' after a score: home-away order for fixtures, ours-theirs for results. */
+  const pensTag = (f) => (f && f.pens ? ` <small class="pens">(${f.pens[0]}–${f.pens[1]} pens)</small>` : '');
+  const pensR = (r) => (r && r.pens ? ` <small class="pens">(${r.pens[0]}–${r.pens[1]} pens)</small>` : '');
   /** Our domestic league competition and its table rows. */
   const league = () => D().competitions.find((c) => c.type === 'league') || { id: 'PL', name: 'League' };
   const leagueRows = () => (D().table && D().table[league().id]) || [];
@@ -195,6 +203,7 @@
     pos === 'GK' ? 'GK' : /B$|CB|WB/.test(pos) ? 'DEF' : /DM|CM|AM|^[LR]M$/.test(pos) ? 'MID' : 'ATT';
 
   FC.u = {
+    pensTag, pensR,
     hasClub, loadClub, clubColor, shortName, shortenName, esc, money, wageYr, wageYrTag, height, weight, contract, num, date, time12, parseDate, daysBetween, MONTHS, MONTHS_LONG, DAYS,
     league, leagueRows, team, teamName, comp, player, personName, us, isUs, opponent, result, played, upcoming,
     initials, crest, portrait, flag, caps, imgFail, compChip, resChip, resPill, goalsFor, apps, ghostCard, ratingClass, sum, posGroup,
