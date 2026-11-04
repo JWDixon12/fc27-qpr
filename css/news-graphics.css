@@ -1,0 +1,79 @@
+/* Article graphics (news-graphics.js). Solid rating fills here, independent of the table chips. */
+.ng { margin: 2em 0; padding: 0; background: var(--stand); border: 1px solid var(--rule); border-radius: var(--r-card); overflow: hidden; font-family: var(--f-text); }
+.ng-cap { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--rule); }
+.ng-cap span { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red); font-weight: 700; }
+.ng-cap b { font-size: 13px; color: var(--ash); font-weight: 500; }
+.ng-i { width: 17px; height: 17px; flex: none; }
+.ng-ball circle { fill: #f2efe9; stroke: #111; stroke-width: 1.2; } .ng-ball path { fill: #111; }
+.ng-boot { fill: var(--gold); }
+.ng-icons { display: inline-flex; gap: 2px; align-items: center; }
+.ng-fb { display: grid; place-items: center; background: var(--tier); color: var(--ash); font-weight: 700; }
+.ng .r-elite, .ng .r-good, .ng .r-ok, .ng .r-poor { color: #0b0b0c; }
+.ng .r-elite { background: #3ecf8e; } .ng .r-good { background: #8fd16a; } .ng .r-ok { background: #e4c548; } .ng .r-poor { background: #e5484d; color: #fff; }
+
+/* Team of the Week pitch */
+.ng-pitch { position: relative; aspect-ratio: 68 / 118; margin: 0 auto; width: 100%;
+  background: repeating-linear-gradient(180deg, #16301f 0 10%, #19351f 10% 20%); }
+.ng-lines { position: absolute; inset: 3%; width: 94%; height: 94%; }
+.ng-lines * { fill: none; stroke: rgba(242, 239, 233, 0.22); stroke-width: 0.35; vector-effect: non-scaling-stroke; }
+.ng-node { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 2px; width: 22%; text-align: center; }
+.ng-face-wrap { position: relative; width: clamp(50px, 10vw, 76px); aspect-ratio: 1; }
+.ng-face { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: top; background: radial-gradient(circle at 50% 30%, #2c2c30, #151517);
+  box-shadow: 0 0 0 2px rgba(242, 239, 233, 0.85), 0 8px 18px rgba(0, 0, 0, 0.5); }
+.ng-node.potw .ng-face { box-shadow: 0 0 0 3px var(--gold), 0 0 22px rgba(212, 175, 55, 0.55); }
+.ng-rate { position: absolute; right: -8px; top: -4px; min-width: 30px; padding: 2px 5px; border-radius: 6px; font-size: 12px; font-weight: 800; line-height: 1.3; }
+.ng-crest { position: absolute; left: -6px; bottom: -2px; width: 26px; height: 26px; border-radius: 50%; background: #0e0e0f; display: grid; place-items: center; box-shadow: 0 0 0 1.5px rgba(242, 239, 233, 0.4); }
+.ng-crest img, .ng-crest .crest-fb { width: 18px !important; height: 18px !important; }
+.ng-name { margin-top: 6px; font-size: clamp(11px, 1.6vw, 14px); line-height: 1.15; color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); }
+.ng-club { font-size: 11px; letter-spacing: 0.06em; color: rgba(242, 239, 233, 0.7); }
+.ng-node .ng-icons { margin-top: 2px; padding: 2px 5px; background: rgba(0, 0, 0, 0.45); border-radius: 999px; }
+.ng-foot { margin: 0; padding: 14px 18px 4px; font-size: 15px; color: var(--chalk); }
+.ng-star { color: var(--gold); }
+.ng-key { margin: 0; padding: 4px 18px 14px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--mute); }
+.ng-key span { width: 12px; }
+
+/* scorecard */
+.ng-sb { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; justify-items: center; padding: 22px 18px 6px; }
+.ng-sb-mid { display: grid; justify-items: center; gap: 4px; }
+.ng-sb-mid b { font-family: var(--f-display); font-size: 56px; line-height: 1; letter-spacing: 0.02em; }
+.ng-sb-mid i { font-style: normal; color: var(--mute); margin: 0 6px; }
+.ng-sb-mid small { color: var(--mute); font-size: 12px; }
+.ng-sb-names { display: grid; grid-template-columns: 1fr 1fr; text-align: center; padding: 0 18px; font-size: 15px; }
+.ng-goals { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 18px 6px; }
+.ng-goals ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 14px; color: var(--ash); }
+.ng-goals ul:first-child { justify-items: end; text-align: right; }
+.ng-goals li { display: flex; gap: 6px; align-items: center; }
+.ng-score .compare { padding: 6px 18px 18px; }
+
+/* heatmaps */
+.ng-heat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--rule); }
+.ng-heat { display: grid; grid-template-columns: 52px 1fr auto; grid-template-areas: "f id r" "img img img" "st st st"; gap: 10px 12px; align-items: center; padding: 16px 18px; background: var(--stand); }
+.ng-hface { grid-area: f; width: 52px; height: 52px; border-radius: 50%; object-fit: cover; object-position: top; background: var(--tier); }
+.ng-heat-id { grid-area: id; display: grid; gap: 2px; }
+.ng-heat-id small { color: var(--mute); font-size: 12px; }
+.ng-rate.big { grid-area: r; position: static; font-size: 18px; padding: 6px 9px; border-radius: 8px; }
+.ng-heat-img { grid-area: img; width: 100%; max-height: 320px; object-fit: contain; border-radius: 8px; background: #141716; }
+.ng-heat-stats { grid-area: st; display: grid; grid-template-columns: repeat(5, 1fr); margin: 0; gap: 6px; }
+.ng-heat-stats div { display: grid; gap: 2px; }
+.ng-heat-stats dt { font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); }
+.ng-heat-stats dd { margin: 0; font-weight: 700; font-size: 14px; }
+
+/* rating bars */
+.ng-bars { list-style: none; margin: 0; padding: 12px 18px 16px; display: grid; gap: 6px; }
+.ng-bars li { display: grid; grid-template-columns: minmax(110px, 180px) 1fr 34px 48px; gap: 10px; align-items: center; font-size: 14px; }
+.ng-bars li.motm .ng-bn { color: var(--gold); }
+.ng-bn small { color: var(--mute); font-size: 11px; }
+.ng-bt { height: 10px; border-radius: 5px; background: var(--tier); overflow: hidden; }
+.ng-bt i { display: block; height: 100%; border-radius: 5px; }
+.ng-bv { text-align: right; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 600px) {
+  .ng-node { width: 25%; }
+  .ng-rate { font-size: 10px; min-width: 24px; right: -10px; }
+  .ng-club { font-size: 9px; }
+  .ng-sb-mid b { font-size: 42px; }
+  .ng-bars li { grid-template-columns: 100px 1fr 30px 40px; font-size: 13px; }
+  .ng-heat-stats { grid-template-columns: repeat(3, 1fr); }
+}
+
+.ng-totw { max-width: 620px; }

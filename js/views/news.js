@@ -13,6 +13,7 @@
 
   function body(blocks) {
     return blocks.map((b) => {
+      if (b.startsWith('::')) return FC.newsGfx ? FC.newsGfx.render(b) : '';
       if (b.startsWith('## ')) return `<h2>${inline(b.slice(3))}</h2>`;
       if (b.startsWith('> ')) {
         const [quote, who] = b.slice(2).split(' -- ');
@@ -25,6 +26,8 @@
   /** Visual for a story: a match crest pair, else the first tagged player's portrait, else our crest. */
   function art(a, size) {
     const U = FC.u;
+    const hero = a.hero && (D().awards || []).flatMap((x) => x.xi).find((p) => p.id === a.hero && p.portrait);
+    if (hero) return `<span class="nw-art nw-art-player"><img src="${esc(hero.portrait)}" alt="" loading="lazy" onerror="this.remove()"></span>`;
     const f = a.match && D().fixtures.find((x) => x.id === a.match);
     if (f) return `<span class="nw-art nw-art-match">${U.crest(f.home, size)}<i>v</i>${U.crest(f.away, size)}</span>`;
     const p = (a.players || []).map((id) => D().squad.find((s) => s.id === id)).find((s) => s && s.portrait);
