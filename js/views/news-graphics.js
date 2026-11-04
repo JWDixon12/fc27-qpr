@@ -33,21 +33,24 @@
     const A = (D().awards || []).filter((a) => /team_of_the_week/.test(a.award));
     const a = A.find((x) => x.period === period) || (!period && A[A.length - 1]);
     if (!a) return '';
-    const rows = ORDER.map((r) => a.xi.filter((p) => (ROW[p.pos] || { GK: 'GK', DEF: 'DEF', MID: 'MID', FW: 'FW' }[p.line]) === r)
-      .sort((x, y) => side(x.pos) - side(y.pos))).filter((r) => r.length);
-    const top = 8, bottom = 90;
-    const nodes = rows.map((r, i) => {
-      const y = rows.length === 1 ? 50 : top + ((bottom - top) * i) / (rows.length - 1);
-      return r.map((p, j) => {
-        const x = ((j + 1) * 100) / (r.length + 1);
-        const potw = p.id === a.playerOfTheWeek;
-        return `<div class="ng-node${potw ? ' potw' : ''}" style="left:${x}%;top:${y}%">
+    const LINE = (p) => ({ FW: 'FW', AM: 'MID', MID: 'MID', DM: 'MID', DEF: 'DEF', GK: 'GK' })[ROW[p.pos] || p.line] || p.line;
+    const LIFT = { AM: -6, DM: 6 };
+    const lr = (p) => { const x = side(p.pos); return x || ({ LM: -1, RM: 1 })[p.pos] || 0; };
+    const rows = ['FW', 'MID', 'DEF', 'GK'].map((l) => a.xi.filter((p) => LINE(p) === l)
+      .sort((x, y) => lr(x) - lr(y) || (LIFT[ROW[x.pos]] || 0) - (LIFT[ROW[y.pos]] || 0))).filter((r) => r.length);
+    const ys = { 4: [12, 40, 68, 90], 3: [15, 50, 88] }[rows.length] || rows.map((_, i) => 10 + (80 * i) / Math.max(1, rows.length - 1));
+    const nodes = rows.map((r, i) => r.map((p, j) => {
+      const n = r.length;
+      const x = n >= 5 ? 9 + (82 * j) / (n - 1) : ((j + 1) * 100) / (n + 1);
+      const arc = n >= 5 ? [-7, 3, 9, 3, -7, 0][Math.min(j, n - 1 - j)] : 0;   // wide men high, centre deep
+      const y = ys[i] + (n >= 5 ? arc : (LIFT[ROW[p.pos]] || 0));
+      const potw = p.id === a.playerOfTheWeek;
+      return `<div class="ng-node${potw ? ' potw' : ''}" style="left:${x}%;top:${y}%">
           <div class="ng-face-wrap">${face(p.portrait, p.name, 'ng-face')}<span class="ng-rate ${U().ratingClass(p.rating)}">${p.rating.toFixed(1)}</span>
             ${p.team ? `<span class="ng-crest">${U().crest(p.team, 22).replace(/ data-team="\d+"/, '')}</span>` : ''}</div>
           <b class="ng-name">${esc(p.name)}</b><small class="ng-club">${esc(U().team(p.team).short || p.club)}</small>
           ${p.goals || p.assists ? `<span class="ng-icons" title="${esc(contribution(p.goals, p.assists))}">${icons(p.goals, p.assists)}</span>` : ''}</div>`;
-      }).join('');
-    }).join('');
+    }).join('')).join('');
     const star = a.xi.find((p) => p.id === a.playerOfTheWeek);
     return `<figure class="ng ng-totw"><figcaption class="ng-cap"><span>Team of the Week</span><b>${esc(a.period)} · ${esc(a.formation)}</b></figcaption>
       <div class="ng-pitch"><svg class="ng-lines" viewBox="0 0 68 100" preserveAspectRatio="none" aria-hidden="true">

@@ -12,11 +12,11 @@
 .ng .r-elite { background: #3ecf8e; } .ng .r-good { background: #8fd16a; } .ng .r-ok { background: #e4c548; } .ng .r-poor { background: #e5484d; color: #fff; }
 
 /* Team of the Week pitch */
-.ng-pitch { position: relative; aspect-ratio: 68 / 118; margin: 0 auto; width: 100%;
+.ng-pitch { position: relative; aspect-ratio: 68 / 100; margin: 0 auto; width: 100%;
   background: repeating-linear-gradient(180deg, #16301f 0 10%, #19351f 10% 20%); }
 .ng-lines { position: absolute; inset: 3%; width: 94%; height: 94%; }
 .ng-lines * { fill: none; stroke: rgba(242, 239, 233, 0.22); stroke-width: 0.35; vector-effect: non-scaling-stroke; }
-.ng-node { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 2px; width: 22%; text-align: center; }
+.ng-node { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 2px; width: 18%; text-align: center; }
 .ng-face-wrap { position: relative; width: clamp(50px, 10vw, 76px); aspect-ratio: 1; }
 .ng-face { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: top; background: radial-gradient(circle at 50% 30%, #2c2c30, #151517);
   box-shadow: 0 0 0 2px rgba(242, 239, 233, 0.85), 0 8px 18px rgba(0, 0, 0, 0.5); }
@@ -68,7 +68,10 @@
 .ng-bv { text-align: right; font-variant-numeric: tabular-nums; }
 
 @media (max-width: 600px) {
-  .ng-node { width: 25%; }
+  .ng-node { width: 19%; }
+  .ng-pitch { aspect-ratio: 68 / 132; }
+  .ng-face-wrap { width: 48px; }
+  .ng-name { font-size: 10.5px; }
   .ng-rate { font-size: 10px; min-width: 24px; right: -10px; }
   .ng-club { font-size: 9px; }
   .ng-sb-mid b { font-size: 42px; }
