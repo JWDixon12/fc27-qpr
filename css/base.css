@@ -1,0 +1,117 @@
+/* Tokens, reset, type. Direction: Swiss matchday programme. Flat, printed, red as signal. */
+:root {
+  color-scheme: dark;
+  /* "Swiss matchday programme": flat surfaces, hairlines, red as the only chrome accent */
+  --night: #0e0e0f;          /* page */
+  --stand: #171718;          /* surface: hero + player cards only */
+  --tier: #1c1c1e;
+  --tier-2: #232325;
+  --rule: #2a2a2c;           /* hairline */
+  --rule-2: #3a3a3d;
+  --chalk: #f2efe9;          /* text */
+  --ash: #c2bfb9;
+  --mute: #9a9792;
+  --red: #da291c;
+  --red-deep: #8f150c;
+  --accent-rgb: 218, 41, 28;
+  --gold: #d4af37;           /* honours only */
+  --home: #da291c;
+  --away: #4f9bd9;           /* stat bars only */
+  --c-league: #da291c;
+  --c-europe: #f2efe9;
+  --c-cup: #9a9792;
+  --good: #3ecf8e;
+  --pos: #3ecf8e;
+  --neg: #e5484d;
+  --warn: #d4af37;
+  --serious: #e5484d;
+  --crit: #e5484d;
+  --grid: #222224;
+  --axis: #2a2a2c;
+  --turf: #141716;
+  --turf-stripe: #161a18;
+  --turf-line: rgba(242, 239, 233, 0.22);
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 40px;
+  --r-chip: 4px; --r-card: 12px;
+
+  --f-display: 'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif;
+  --f-text: 'Archivo', 'Segoe UI', system-ui, sans-serif;
+
+  --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+  --step-0: clamp(0.9rem, 0.87rem + 0.15vw, 1rem);
+  --step-1: clamp(1.1rem, 1.02rem + 0.35vw, 1.3rem);
+  --step-2: clamp(1.4rem, 1.2rem + 0.8vw, 1.9rem);
+  --step-3: clamp(1.9rem, 1.5rem + 1.6vw, 3rem);
+  --step-4: clamp(2.6rem, 1.8rem + 3.4vw, 5.6rem);
+  --step-5: clamp(3.4rem, 2rem + 6vw, 9rem);
+
+  --gutter: clamp(16px, 2.2vw, 56px);
+  --gap: clamp(14px, 1.2vw, 28px);
+  --r-sm: 4px;
+  --r-md: 12px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[hidden] { display: none !important; }
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 120px; }
+@media (min-width: 3000px) { html { font-size: 19px; } }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--night);
+  color: var(--chalk);
+  font-family: var(--f-text);
+  font-size: 15px;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+  font-variation-settings: 'wdth' 100;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* film grain over everything, very faint */
+
+h1, h2, h3, h4 { margin: 0; font-family: var(--f-display); font-weight: 800; line-height: 0.95; letter-spacing: 0.005em; }
+h1 { font-size: var(--step-4); }
+h2 { font-size: var(--step-2); }
+h3 { font-size: var(--step-1); font-weight: 700; }
+p { margin: 0 0 0.8em; max-width: 70ch; }
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+small { font-size: var(--step--1); }
+code { font-size: 0.9em; color: var(--ash); }
+button, input, select { font: inherit; color: inherit; }
+
+.num, td.n, .tabular { font-variant-numeric: tabular-nums; }
+
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 2px; }
+
+.skip {
+  position: absolute;
+  left: 8px;
+  top: -60px;
+  z-index: 200;
+  padding: 8px 12px;
+  background: var(--gold);
+  color: #111;
+  font-weight: 700;
+}
+.skip:focus { top: 8px; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

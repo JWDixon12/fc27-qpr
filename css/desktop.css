@@ -1,0 +1,8 @@
+/* Big desktop screens: keep everything in one centred column so the eye doesn't travel edge to edge. */
+:root { --page-max: 1560px; }
+.mast-inner, .tabs, main, .foot { max-width: var(--page-max); }
+@media (min-width: 3000px) { :root { --page-max: 1880px; } }
+
+/* the phone-only squad list was leaking onto desktop above the table */
+@media (min-width: 761px) { .sq-list { display: none; } }
+.home2 { max-width: none; }
