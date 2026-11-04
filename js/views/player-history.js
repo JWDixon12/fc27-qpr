@@ -182,6 +182,40 @@
       <svg class="chart-svg hy-chart" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Goals and assists by season">${bars}</svg>`;
   }
 
+  /* Honours (Transfermarkt, to 30 June 2026), grouped like a trophy cabinet. Team trophies use the real trophy
+     art; individual awards (TM id 0) use our award badges. A missing image falls back to a plain cup. */
+  const AWARD_ART = [[/scorer|boot|pichichi|capocannon|torj/i, 'golden_boot'], [/keeper|glove|zamora|yashin/i, 'golden_glove'],
+    [/young|newcomer|golden boy|talent|breakthrough|rookie|kopa/i, 'young_player'], [/team of|xi\b|eleven/i, 'team_of_the_season']];
+  const seasonLabel = (x) => { const m = /^(\d{2})\/(\d{2})$/.exec(x || ''); return m ? `20${m[1]}-${m[2]}` : String(x || ''); };
+  const art = (h) => (h.id ? `img/trophies/${h.id}.png`
+    : `img/awards/${(AWARD_ART.find(([re]) => re.test(h.name)) || [0, 'player_of_the_season'])[1]}.svg`);
+
+  function honours(p) {
+    const list = (p.history && p.history.honours) || [];
+    if (!list.length) return '';
+    const groups = new Map();
+    list.forEach((h) => {
+      const k = h.id ? `t${h.id}` : `a${h.name}|${h.comp || h.club || ''}`;
+      if (!groups.has(k)) groups.set(k, { h, rows: [] });
+      groups.get(k).rows.push(h);
+    });
+    const tile = ({ h, rows }) => {
+      const sub = h.id ? '' : (h.comp || h.club || '');
+      const seasons = rows.map((r) => seasonLabel(r.season)).reverse();
+      const tip = rows.map((r) => `${seasonLabel(r.season)}${r.club ? ` · ${r.club}` : ''}`).reverse().join('\n');
+      return `<li class="ho-t" title="${esc(tip)}"><img src="${art(h)}" alt="" width="48" height="48" loading="lazy" onerror="this.onerror=null;this.src='img/trophies/cup.svg'">
+        <div class="ho-x"><b class="ho-n">${rows.length > 1 ? `<span class="ho-c">${rows.length}×</span>` : ''}${esc(h.name)}</b>${sub ? `<span class="ho-s">${esc(sub)}</span>` : ''}
+        <span class="ho-y">${esc(seasons.slice(0, 6).join(', '))}${seasons.length > 6 ? ` +${seasons.length - 6}` : ''}</span></div></li>`;
+    };
+    const order = (a, b) => b.rows.length - a.rows.length || (b.rows[b.rows.length - 1].season || '').localeCompare(a.rows[a.rows.length - 1].season || '');
+    const all = [...groups.values()];
+    const team = all.filter((g) => g.h.id).sort(order);
+    const ind = all.filter((g) => !g.h.id).sort(order);
+    const part = (title, gs) => (gs.length ? `<h4 class="ho-h">${title}</h4><ul class="ho-grid">${gs.map(tile).join('')}</ul>` : '');
+    return `<section class="panel pp-wide ho"><div class="panel-head"><h3>Honours</h3><span class="sub">To 30 June 2026</span></div>
+      ${part('Trophies', team)}${part('Individual awards', ind)}</section>`;
+  }
+
   function block(p) {
     const has = p.history && p.history.seasons && p.history.seasons.length;
     if (!has && !(p.season && p.season.apps)) return '';
@@ -189,7 +223,7 @@
     if (has && !p.history.seasons.some((s) => st.tab === 'all' || s.compType === st.tab)) st.tab = 'all';
     const types = new Set(((p.history && p.history.seasons) || []).map((s) => s.compType));
     if (!st.tab) st.tab = 'all';
-    return `<section class="panel pp-wide hy" data-hy="${p.id}"><div class="panel-head"><h3>Standard stats</h3><span class="sub">${has ? 'Club career to 30 June 2026' : 'This career'}</span></div>
+    return `${honours(p)}<section class="panel pp-wide hy" data-hy="${p.id}"><div class="panel-head"><h3>Standard stats</h3><span class="sub">${has ? 'Club career to 30 June 2026' : 'This career'}</span></div>
       ${chart(p)}<div class="seg hy-tabs" role="tablist">${TABS.filter(([k]) => k === 'all' || types.has(k)).map(([k, l]) => `<button type="button" role="tab" data-hytab="${k}" aria-pressed="${st.tab === k}">${l}</button>`).join('')}</div>
       <div class="hy-body">${table(p)}</div></section>`;
   }

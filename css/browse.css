@@ -118,3 +118,16 @@
   .hy-table th, .hy-table td { padding: 7px 6px; }
   .hy-table .hy-s { padding-left: 10px; }
 }
+
+/* Honours cabinet on player sheets */
+.ho-h { font: 700 var(--step--1)/1.2 var(--f-text); text-transform: uppercase; letter-spacing: 0.08em; color: var(--mute); margin: 4px 0 10px; }
+.ho-h ~ .ho-h { margin-top: 18px; }
+.ho-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.ho-t { display: flex; gap: 12px; align-items: center; padding: 10px 12px; background: var(--tier); border: 1px solid var(--rule); border-radius: var(--r-card); }
+.ho-t img { width: 48px; height: 48px; object-fit: contain; flex: none; }
+.ho-x { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ho-n { font-weight: 700; color: var(--chalk); line-height: 1.25; }
+.ho-c { color: var(--gold); margin-right: 6px; font-family: var(--f-display); font-size: 1.15em; }
+.ho-s { color: var(--ash); font-size: var(--step--1); }
+.ho-y { color: var(--mute); font-size: var(--step--1); }
+@media (max-width: 760px) { .ho-grid { grid-template-columns: 1fr; } }
