@@ -63,7 +63,7 @@
 .news-list { list-style: none; margin: 0; padding: 0; }
 .news-list a { display: grid; gap: 4px; padding: 10px 0; border-bottom: 1px solid var(--rule); text-decoration: none; }
 .news-list li:last-child a { border-bottom: 0; }
-.news-list b { font-family: var(--f-news); font-weight: 600; font-size: 18px; line-height: 1.25; }
+.news-list a > b { font-family: var(--f-news); font-weight: 600; font-size: 18px; line-height: 1.25; }
 
 @media (max-width: 900px) {
   .nw-lead { grid-template-columns: 1fr; }
