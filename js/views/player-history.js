@@ -191,7 +191,8 @@
     : `img/awards/${(AWARD_ART.find(([re]) => re.test(h.name)) || [0, 'player_of_the_season'])[1]}.svg`);
 
   /* Our own awards from this career (CAREER.awards): Team of the Week picks and Player of the Week. */
-  const AWARD_NAME = { championship_team_of_the_week: 'Championship Team of the Week' };
+  const AWARD_NAME = { championship_team_of_the_week: 'Championship Team of the Week',
+    championship_player_of_the_month: 'Championship Player of the Month' };
   const awardName = (k) => AWARD_NAME[k] || k.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase());
   const periodLabel = (x) => String(x || '').replace(/^(\d{4})\/(\d{2}) (.+)$/, '$3 $1-$2');
 
@@ -203,17 +204,18 @@
     };
     ((window.CAREER && window.CAREER.awards) || []).forEach((e) => {
       if (e.status && e.status !== 'final') return;
+      if (e.winner && e.winner.id === p.id) add(e.award, awardName(e.award), 'player_of_the_month', { ...e, r: e.winner });
       const r = (e.xi || []).find((x) => x.id === p.id);
       if (!r) return;
       const base = awardName(e.award);
       add(e.award, base, 'team_of_the_week', { ...e, r });
       if (e.playerOfTheWeek === p.id) add(`${e.award}:potw`, base.replace('Team of the Week', 'Player of the Week'), 'player_of_the_week', { ...e, r });
     });
-    return [...out.values()].sort((a, b) => (a.badge === 'player_of_the_week' ? -1 : 0) - (b.badge === 'player_of_the_week' ? -1 : 0));
+    return [...out.values()].sort((a, b) => (a.badge === 'team_of_the_week' ? 1 : -1) - (b.badge === 'team_of_the_week' ? 1 : -1));
   }
 
   function careerTile(g) {
-    const periods = g.rows.map((e) => `${periodLabel(e.period)} (${e.r.rating.toFixed(1)})`).reverse();
+    const periods = g.rows.map((e) => `${periodLabel(e.period)} (${(+e.r.rating).toFixed(1)})`).reverse();
     return `<li class="ho-t"><img src="img/awards/${g.badge}.svg" alt="" width="48" height="48" loading="lazy">
       <div class="ho-x"><b class="ho-n">${g.rows.length > 1 ? `<span class="ho-c">${g.rows.length}×</span>` : ''}${esc(g.name)}</b>
       <span class="ho-y">${esc(periods.slice(0, 6).join(', '))}${periods.length > 6 ? ` +${periods.length - 6}` : ''}</span></div></li>`;
