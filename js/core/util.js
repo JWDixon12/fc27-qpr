@@ -162,12 +162,12 @@
     if (!p || !p.portrait) return `<span class="face-fb" style="--s:${sz}px" aria-hidden="true">${fb}</span>`;
     return `<img class="face ${extra || ''}" src="${esc(p.portrait)}" alt="" width="${sz}" height="${sz}" loading="lazy" data-fb="${fb}" data-fbk="face" onerror="FC.u.imgFail(this)">`;
   }
-  /** " · 56 caps, 26 goals" for a senior international (Transfermarkt, to 30 Jun 2026). */
+  /** " · 56 caps, 26 goals" for a senior international (Transfermarkt to 30 Jun 2026, then the save). */
   function caps(p) {
     const n = p && p.intl;
     if (!n || !n.caps) return '';
     const t = `${n.caps} ${n.caps === 1 ? 'cap' : 'caps'}, ${n.goals} ${n.goals === 1 ? 'goal' : 'goals'}`;
-    return ` <span class="pp-caps" title="${esc(n.team)} senior caps to 30 June 2026">· ${t}</span>`;
+    return ` <span class="pp-caps" title="${esc(n.team)} senior caps">· ${t}</span>`;
   }
   function flag(p) {
     if (!p || !p.natFlag) return '<span class="flag flag-ph" aria-hidden="true"></span>';
