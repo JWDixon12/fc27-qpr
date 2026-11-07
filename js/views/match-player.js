@@ -20,7 +20,7 @@
     const subIn = (p) => (m.events || []).find((e) => e.type === 'sub' && e.side === side && e.player === p.name);
     const marks = (p) => {
       const sub = subIn(p);
-      return `<span class="mp-marks">${sub ? `<i class="sub-in" title="On for ${esc(sub.playerOut || '')}">${sub.minute}'</i>` : ''}${p.goals ? `<i class="ga">${p.goals > 1 ? p.goals : ''}G</i>` : ''}${p.assists ? `<i class="ga">${p.assists > 1 ? p.assists : ''}A</i>` : ''}</span>`;
+      return `<span class="mp-marks">${sub ? `<i class="sub-in" title="${sub.playerOut ? `On for ${esc(sub.playerOut)}` : 'Substitute'}">${sub.minute}'</i>` : ''}${p.goals ? `<i class="ga">${p.goals > 1 ? p.goals : ''}G</i>` : ''}${p.assists ? `<i class="ga">${p.assists > 1 ? p.assists : ''}A</i>` : ''}</span>`;
     };
     const subs = (m.unusedSubs && m.unusedSubs[side]) || [];
     return `<div class="mp-team"><h3>${esc(m.sides[side].name)}</h3><ol class="mp-list">${list.map((p) => `<li><button type="button" class="mp-row ${p.key === st.key ? 'sel' : ''}" data-mp="${esc(p.key)}" aria-pressed="${p.key === st.key}">
@@ -38,6 +38,7 @@
 
   function mapFor(m, p, tab) {
     const color = p.side === 'home' ? 'var(--L)' : 'var(--R)';
+    if (tab === 'goalkeeping' && !p.maps.gk_goal) return '<p class="empty-note">No map for this match.</p>';
     if (tab === 'goalkeeping') {
       return `<figure class="gp-goal"><img src="${esc(p.maps.gk_goal)}_raw.jpg" alt="Shots saved, goal view" loading="lazy"><figcaption>Shots saved</figcaption></figure>
         ${FC.gp.map({ src: p.maps.gk_shots, half: true, color, caption: 'All shots faced', label: `${p.name}: shots faced`, blank: (p.blankMaps || []).includes('gk_shots') ? 'None this match' : '' })}`;

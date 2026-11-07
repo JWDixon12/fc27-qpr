@@ -41,16 +41,16 @@
   function team(comp) {
     const us = D().meta.clubId;
     const list = matches(comp);
-    const out = { n: list.length, w: 0, d: 0, l: 0, gf: 0, ga: 0, xgf: 0, xga: 0, cs: 0, poss: 0, series: [] };
+    const out = { n: list.length, w: 0, d: 0, l: 0, gf: 0, ga: 0, xgf: 0, xga: 0, cs: 0, poss: 0, possN: 0, series: [] };
     list.forEach(({ f, m }) => {
       const i = f.home === us ? 0 : 1;
       const gf = m.score[i], ga = m.score[1 - i];
       out[gf > ga ? 'w' : gf === ga ? 'd' : 'l'] += 1;
-      out.gf += gf; out.ga += ga; out.xgf += m.xg[i]; out.xga += m.xg[1 - i]; out.poss += m.possession[i];
+      out.gf += gf; out.ga += ga; out.xgf += m.xg[i]; out.xga += m.xg[1 - i]; if (m.possession[i] != null) { out.poss += m.possession[i]; out.possN += 1; }
       if (ga === 0) out.cs += 1;
       out.series.push({ f, label: FC.u.team(FC.u.opponent(f)).short, xgf: m.xg[i], xga: m.xg[1 - i], gf, ga });
     });
-    out.poss = list.length ? out.poss / list.length : 0;
+    out.poss = out.possN ? out.poss / out.possN : 0;
     return out;
   }
 

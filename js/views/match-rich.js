@@ -20,9 +20,9 @@
 
   function scoreboard(f, m) {
     const U = FC.u;
-    const goals = (s) => m.events.filter((e) => /goal/.test(e.type) && e.side === s).map((e) => `<li>${esc(e.player)} ${e.minute}'${e.assist ? ` <small>(${esc(e.assist)})</small>` : ''}</li>`).join('');
+    const goals = (s) => m.events.filter((e) => /goal/.test(e.type) && e.side === s).map((e) => `<li>${esc(e.player)}${e.minute == null ? '' : ` ${e.minute}'`}${e.assist ? ` <small>(${esc(e.assist)})</small>` : ''}</li>`).join('');
     const side = (s, i) => `<div class="sb-side sb-${i ? 'r' : 'l'}">${U.crest(m.sides[s].teamId, 110, 'sb-crest')}<h2${U.hasClub(m.sides[s].teamId) ? ` data-team="${m.sides[s].teamId}"` : ''}>${esc(sideName(m, s))}</h2>
-      <p class="sb-xg">${m.xg[i].toFixed(2)} xG · ${m.possession[i]}% possession</p><ul class="sb-goals">${goals(s)}</ul></div>`;
+      <p class="sb-xg">${m.xg[i].toFixed(2)} xG${m.possession[i] == null ? '' : ` · ${m.possession[i]}% possession`}</p><ul class="sb-goals">${goals(s)}</ul></div>`;
     const paused = m.minutesPlayed && m.minutesPlayed < 90;
     return `<section class="scoreboard" aria-label="Score">
       <header>${f.comp ? U.compChip(f.comp) : ''}</header>
@@ -105,26 +105,27 @@
     };
     const evs = m.events.filter((e) => e.type !== 'shootout');
     const kicks = m.events.filter((e) => e.type === 'shootout');
-    const half = evs.findIndex((e) => e.minute > 45);
+    const half = evs.some((e) => e.minute == null) ? -2 : evs.findIndex((e) => e.minute > 45);
     const rows = evs.map((e, i) => {
       const ht = i === half ? '<li class="ev ft ht"><span class="ev-min">HT</span></li>' : '';
-      return `${ht}<li class="ev ${e.side === 'home' ? 'l' : 'r'} ev-${esc(e.type)}"><div class="ev-body">${icon(e)}<div>${label(e)}</div></div><span class="ev-min">${e.minute}'</span></li>`;
+      return `${ht}<li class="ev ${e.side === 'home' ? 'l' : 'r'} ev-${esc(e.type)}"><div class="ev-body">${icon(e)}<div>${label(e)}</div></div><span class="ev-min">${e.minute == null ? '' : `${e.minute}'`}</span></li>`;
     }).join('');
     const so = kicks.length ? `<li class="ev ft"><span class="ev-min">PENS</span></li>${kicks.map((e) => `<li class="ev ${e.side === 'home' ? 'l' : 'r'} ev-so"><div class="ev-body"><span class="so-mark ${e.scored ? 'ok' : 'no'}" aria-hidden="true">${e.scored ? '✓' : '✗'}</span><div><span class="ev-name">${esc(e.player)}</span>${e.scored ? '' : '<small>Saved</small>'}</div></div><span class="ev-min">${e.order}</span></li>`).join('')}` : '';
     const end = `<li class="ev ft"><span class="ev-min">${m.minutesPlayed < 90 ? esc(m.clock.split(':')[0]) + "'" : 'FT'}</span></li>${so}`;
     const shotTable = m.shots.length ? `<div class="table-wrap"><table class="data"><caption class="visually-hidden">Shots</caption><thead><tr><th>Team</th><th>Min</th><th>Player</th><th>Type</th><th class="n">xG</th><th>Result</th></tr></thead><tbody>${shots}</tbody></table></div>` : '';
-    return `<div class="gm-events"><ol class="events">${rows}${half < 0 ? '<li class="ev ft ht"><span class="ev-min">HT</span></li>' : ''}${end}</ol>${shotTable}</div>`;
+    return `<div class="gm-events"><ol class="events">${rows}${half === -1 ? '<li class="ev ft ht"><span class="ev-min">HT</span></li>' : ''}${end}</ol>${shotTable}</div>`;
   }
 
   function body(f, m) {
     const tab = st.tab;
     if (tab === 'events') return events(f, m);
     if (tab === 'summary') return `<div class="gm-solo">${summary(m)}</div>`;
+    const r = RING[tab];
+    const rate = r && m.rings[r[0]] ? FC.chart.compare([{ label: r[1], values: m.rings[r[0]], fmt: (v) => `${v}%` }]) : '';
+    if (!Object.keys(m.factsMaps).length) return `<div class="gm-solo">${rate}${list(m.facts[tab])}</div>`;
     const views = VIEWS[tab];
     const tools = `<div class="gm-tools"><div class="seg" role="group" aria-label="Map view">${views.map(([k, l]) => `<button type="button" data-gview="${k}" aria-pressed="${(st.view[tab] || views[0][0]) === k}">${l}</button>`).join('')}</div>
       <div class="seg" role="group" aria-label="Map style"><button type="button" data-graw="0" aria-pressed="${!st.raw}">Clean</button><button type="button" data-graw="1" aria-pressed="${st.raw}">Original</button></div></div>`;
-    const r = RING[tab];
-    const rate = r ? FC.chart.compare([{ label: r[1], values: m.rings[r[0]], fmt: (v) => `${v}%` }]) : '';
     const centre = (tab === 'possession' ? threat(m) : '') + rate + list(m.facts[tab].filter((sec) => tab !== 'possession'));
     return `${tools}<div class="gm-grid">${sideCol(f, m, tab, 'home', 0)}<div class="gm-centre">${centre}</div>${sideCol(f, m, tab, 'away', 1)}</div>`;
   }

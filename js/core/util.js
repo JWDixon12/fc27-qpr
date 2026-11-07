@@ -193,7 +193,7 @@
   const resPill = (r) => (r ? `<span class="res-pill rp-${r.res}">${{ W: 'Win', D: 'Draw', L: 'Loss' }[r.res]}</span>` : '');
   /** Goal lines for one team in a captured match: "Name 23' (pen)". */
   const goalsFor = (m, teamId) => (m ? m.events.filter((e) => /goal/.test(e.type) && e.team === teamId)
-    .map((e) => `${esc(personName(e.player))} ${e.minute}'${e.type === 'pen_goal' ? ' (pen)' : e.type === 'own_goal' ? ' (og)' : ''}`) : []);
+    .map((e) => `${esc(personName(e.player))}${e.minute == null ? '' : ` ${e.minute}'`}${e.type === 'pen_goal' ? ' (pen)' : e.type === 'own_goal' ? ' (og)' : ''}`) : []);
   const apps = (n) => `${n} app${n === 1 ? '' : 's'}`;
   /** Plain empty-state block: a factual heading and one line. */
   const ghostCard = (title, body) => `<section class="panel ghost-card pp-wide"><h3>${esc(title)}</h3><p>${esc(body)}</p></section>`;

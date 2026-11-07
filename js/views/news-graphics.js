@@ -74,8 +74,8 @@
     if (!m || !f) return '';
     const u = U();
     const goals = (t) => m.events.filter((e) => /goal/.test(e.type) && e.team === t)
-      .map((e) => `<li>${BALL}${esc(u.personName(e.player))} ${e.minute}'</li>`).join('');
-    const rows = [['Possession', m.possession, (v) => `${v}%`], ['Shots', factVal(m, 'shooting', 'Total Shots')],
+      .map((e) => `<li>${BALL}${esc(u.personName(e.player))}${e.minute == null ? '' : ` ${e.minute}'`}</li>`).join('');
+    const rows = [['Possession', m.possession[0] == null ? null : m.possession, (v) => `${v}%`], ['Shots', factVal(m, 'shooting', 'Total Shots')],
       ['On target', factVal(m, 'shooting', 'On Target')], ['Expected goals', m.xg, (v) => Number(v).toFixed(2)],
       ['Passes', factVal(m, 'passing', 'Total Passes')], ['Tackles won', factVal(m, 'summary', 'Tackles Won')]]
       .filter((r) => r[1]).map(([label, values, fmt]) => ({ label, values, fmt }));
